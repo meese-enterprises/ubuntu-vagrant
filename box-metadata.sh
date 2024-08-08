@@ -27,6 +27,7 @@ cat >"$path.json" <<EOF
   ]
 }
 EOF
+
 cat <<EOF
 
 Add the Vagrant Box with:

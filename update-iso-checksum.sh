@@ -1,9 +1,14 @@
 #!/bin/bash
-# this will update the ubuntu.pkr.hcl file with the iso image checksum.
-# see https://help.ubuntu.com/community/VerifyIsoHowto
-# abort this script when a command fails or a unset variable is used and echo
-# the executed commands.
+
+##
+# This will update the `ubuntu.pkr.hcl` file with the generated ISO image checksum.
+# REF: https://help.ubuntu.com/community/VerifyIsoHowto
+##
+
+# Aborts the script when a command fails or a unset variable is used,
+# and prints the executed commands
 set -eux
+
 iso_url=$(perl -n -e '/"(.+\.iso)"/ && print $1' ubuntu.pkr.hcl)
 iso_checksum_url="$(dirname $iso_url)/SHA256SUMS"
 iso_filename="$(basename $iso_url)"
@@ -18,4 +23,5 @@ gpg --verify SHA256SUMS.gpg SHA256SUMS
 iso_checksum=$(grep $iso_filename SHA256SUMS | awk '{print $1}')
 sed -i -E "s,\"sha.+?:[a-f0-9]*\",\"sha256:$iso_checksum\",g" ubuntu.pkr.hcl
 rm SHA256SUMS*
-echo 'iso_checksum updated successfully'
+
+echo "iso_checksum updated successfully"
